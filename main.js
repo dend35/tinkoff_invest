@@ -6,28 +6,42 @@ const api = new OpenAPI({
     socketURL: 'wss://api-invest.tinkoff.ru/openapi/md/v1/md-openapi/ws',
     secretToken: Token
 });
-async function main() {
+async function GetPositionsData() {
     var portfolio = (await api.portfolio()).positions
     for(let item of portfolio){
-        item.yieldSum = item.lots * item.expectedYield.value
-        item.currentSum = item.lots * item.averagePositionPrice.value
-        item.commonProfitRUB = item.averagePositionPrice.currency == 'USD' ? await CurrencyHelper.Convert_USD_To_RUB(item.currentSum - item.yieldSum) : item.currentSum - item.yieldSum
-        item.commonProfitUSD = item.averagePositionPrice.currency == 'RUB' ? await CurrencyHelper.Convert_RUB_To_USD(item.currentSum - item.yieldSum) : item.currentSum - item.yieldSum
+        item.currentSum = item.balance * item.averagePositionPrice.value
+        item.commonProfitRUB = item.averagePositionPrice.currency == 'USD' ? await CurrencyHelper.Convert_USD_To_RUB(item.expectedYield.value) : item.expectedYield.value
+        item.commonProfitUSD = item.averagePositionPrice.currency == 'RUB' ? await CurrencyHelper.Convert_RUB_To_USD(item.expectedYield.value) : item.expectedYield.value
+        item.profitRUB = item.averagePositionPrice.currency == 'RUB' ? item.expectedYield.value : 0
+        item.profitUSD = item.averagePositionPrice.currency == 'USD' ? item.expectedYield.value : 0
+        item.profitPercent = item.expectedYield.value / item.currentSum
     };
-    let totalProfit = portfolio.reduce(function (sum, val){
-        sum.RUB+=val.commonProfitRUB
-        sum.USD+=val.commonProfitUSD
+
+    let report = portfolio.reduce(function (sum, val){
+        sum.commonRUB+=val.commonProfitRUB
+        sum.commonUSD+=val.commonProfitUSD
+        sum.RUB+=val.profitRUB
+        sum.USD+=val.profitUSD
+        sum.Percent= (sum.Percent + val.profitPercent) / 2
        return sum
-    }, {RUB: 0, USD: 0})
-    console.log(totalProfit)
+    }, {commonRUB: 0,
+        commonUSD: 0,
+        RUB: 0,
+        USD: 0,
+        Percent: 0
+    })
+
+    return {Data: portfolio, Report: report}
 }
 
-main()
+async function GetPositionsReport(){
+    return (await GetPositionsData()).Report
+}
 
 
 
 // async function test(){
-//     var qqq = await CurrencyHelper.Convert_USD_To_RUB(1)
+//     var qqq = await GetPositionsReport()
 //     console.log(qqq)
 // }
 // test()
