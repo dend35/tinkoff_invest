@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/dend35/tinkoff_invest/issues"
   },
-  "homepage": "https://github.com/dend35/tinkoff_invest#readme"
+  "homepage": "https://github.com/dend35/tinkoff_invest#readme",
+  "dependencies": {
+    "@tinkoff/invest-openapi-js-sdk": "^1.2.16"
+  }
 }
