@@ -1,0 +1,10 @@
+    Типы операций:
+PayIn — Пополнение брокерского счета
+PayOut — Вывод денег
+BuyCard — Покупка с карты
+Sell — Продажа
+BrokerCommission — Комиссия брокера
+Dividend — Выплата дивидендов
+Tax — Налоги
+TaxDividend- Налоги c дивидендов
+ServiceCommission — Комиссия за обслуживание

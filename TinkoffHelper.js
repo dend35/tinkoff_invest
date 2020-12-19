@@ -39,7 +39,6 @@ async function GetPositionsData() {
         currentSumUSD: 0,
         Percent: 0
     })
-    console.log(portfolio)
     return { Data: portfolio, Report: report }
 }
 
