@@ -45,16 +45,16 @@ async function GetPositionsData() {
 async function GetOperations(figi) {
     let from = new Date(2015, 1, 1)
     let to = new Date()
-    try{
-        var operations = (await api.operations({from, to, figi})).operations
+    try {
+        var operations = (await api.operations({ from, to, figi })).operations
         operations = Extensions.groupBy('operationType')(operations)
-        
+
         var report = []
-        for(operation in operations){
-            report.push(operations[operation].reduce(function (sum, val){
+        for (operation in operations) {
+            report.push(operations[operation].reduce(function (sum, val) {
                 sum.operation = val.operationType
-                sum.avgPrice = (sum.avgPrice + val.price)/2
-                sum.count+= val.quantityExecuted
+                sum.avgPrice = (sum.avgPrice + val.price) / 2
+                sum.count += val.quantityExecuted
                 return sum
             }, {
                 operation: "",
@@ -63,17 +63,20 @@ async function GetOperations(figi) {
             }))
         }
         console.log(report)
-    }catch(ex){
+    } catch (ex) {
         console.log(ex)
     }
-    
+
 }
 
 //GetOperations("BBG000000001")
 async function GetShortPositionsReport(report) {
     if (!report)
         report = (await GetPositionsData()).Report
-    return report.Percent == 0 ? "Ты не ушел в плюс, как и в минус 🟨" : report.Percent > 0 ? `Прибыль ${(report.Percent * 100).toFixed(3)}% 🟩` : `Убыток ${(report.Percent * 100).toFixed(3)}% 🟥`
+    let value = `${(report.Percent * 100).toFixed(3)}%\n${report.commonRUB.toFixed(2)}₽`
+    return report.Percent == 0 ? "Ты не ушел в плюс, как и в минус 🟨" : report.Percent > 0 ?
+        `🟩 Прибыль \n${value}` :
+        `🟥 Убыток \n${value}`
 }
 
 async function GetPositionsReport(report) {
