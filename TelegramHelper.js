@@ -1,4 +1,5 @@
 const Settings = require('./settings.js');
+const TinkoffHelper = require('./TinkoffHelper.js');
 var Telegraf = require('telegraf')
 const bot = new Telegraf(Settings.TelegramToken)
 
@@ -14,7 +15,10 @@ function Start(){
     bot.start(async (ctx) => await ctx.reply("Меню", menu))
     
     bot.action('rep', async (ctx) => {
-        await ctx.reply('RAP', menu)
+        await ctx.reply(await TinkoffHelper.GetPositionsReport(), menu)
+    })
+    bot.command('rep', async (ctx) => {
+        await ctx.reply(await TinkoffHelper.GetPositionsReport(), menu)
     })
     bot.launch()
 }
