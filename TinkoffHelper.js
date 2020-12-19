@@ -70,7 +70,11 @@ async function GetOperations(figi) {
 }
 
 //GetOperations("BBG000000001")
-
+async function GetShortPositionsReport(report) {
+    if (!report)
+        report = (await GetPositionsData()).Report
+    return report.Percent == 0 ? "Ты не ушел в плюс, как и в минус 🟨" : report.Percent > 0 ? `Прибыль ${(report.Percent * 100).toFixed(3)}% 🟩` : `Убыток ${(report.Percent * 100).toFixed(3)}% 🟥`
+}
 
 async function GetPositionsReport(report) {
     if (!report)
@@ -80,7 +84,7 @@ async function GetPositionsReport(report) {
         `🔹 Активы USD: ${report.currentSumUSD.toFixed(2)}\n` +
         `🔸 Прибыль в RUB: ${report.commonRUB.toFixed(2)}\n` +
         `🔹 Прибыль в USD: ${report.commonUSD.toFixed(2)}\n` +
-        `💱 Прирост: ${(report.Percent * 100).toFixed(2)}%\n`
+        `💱 Прирост: ${(report.Percent * 100).toFixed(3)}%\n`
     return txt
 }
 
@@ -92,7 +96,7 @@ async function GetFullPositionsReport() {
             `🟠 Количество: ${item.balance}\n` +
             `🟡 Стоимость шт: ${item.averagePositionPrice.value.toFixed(2)} ${item.averagePositionPrice.currency}\n` +
             `🟢 Сумма: ${item.currentSum.toFixed(2)} ${item.averagePositionPrice.currency}\n` +
-            `🔵 Прирост: ${(item.profitPercent * 100).toFixed(2)}%\n` +
+            `🔵 Прирост: ${(item.profitPercent * 100).toFixed(3)}%\n` +
             `🟣 Прибыль: ${item.expectedYield.value} ${item.averagePositionPrice.currency} ${item.expectedYield.value == 0 ? "🟨" : item.expectedYield.value > 0 ? "🟩" : "🟥"}\n` +
             `\n`
     }
@@ -101,5 +105,6 @@ async function GetFullPositionsReport() {
 }
 
 module.exports.GetPositionsReport = GetPositionsReport
+module.exports.GetShortPositionsReport = GetShortPositionsReport
 module.exports.GetFullPositionsReport = GetFullPositionsReport
 module.exports.GetPositionsData = GetPositionsData
