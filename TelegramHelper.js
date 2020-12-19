@@ -7,7 +7,7 @@ function Start(){
     var menu = {
         reply_markup: {
             inline_keyboard: [
-                [{ text: 'Отчет', callback_data: 'rep'}, { text: 'Пока ничего', callback_data: 'rep' }]
+                [{ text: 'Отчет', callback_data: 'rep'}, { text: 'Полный отчет', callback_data: 'fullrep' }]
             ]
         }
     };
@@ -19,6 +19,12 @@ function Start(){
     })
     bot.command('rep', async (ctx) => {
         await ctx.reply(await TinkoffHelper.GetPositionsReport(), menu)
+    })
+    bot.action('fullrep', async (ctx) => {
+        await ctx.reply(await TinkoffHelper.GetFullPositionsReport(), menu)
+    })
+    bot.command('fullrep', async (ctx) => {
+        await ctx.reply(await TinkoffHelper.GetFullPositionsReport(), menu)
     })
     bot.launch()
 }
