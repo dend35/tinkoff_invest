@@ -45,11 +45,12 @@ async function GetPositionsData() {
 async function GetPositionsReport(report) {
     if (!report)
         report = (await GetPositionsData()).Report
-    let txt = `Активы RUB: ${report.currentSumRUB.toFixed(2)}\n` +
-        `Активы USD: ${report.currentSumUSD.toFixed(2)}\n` +
-        `Прибыль в RUB: ${report.commonRUB.toFixed(2)}\n` +
-        `Прибыль в USD: ${report.commonUSD.toFixed(2)}\n` +
-        `Прирост: ${(report.Percent * 100).toFixed(2)}%\n`
+    let txt = `Отчет:\n` +
+        `🔸 Активы RUB: ${report.currentSumRUB.toFixed(2)}\n` +
+        `🔹 Активы USD: ${report.currentSumUSD.toFixed(2)}\n` +
+        `🔸 Прибыль в RUB: ${report.commonRUB.toFixed(2)}\n` +
+        `🔹 Прибыль в USD: ${report.commonUSD.toFixed(2)}\n` +
+        `💱 Прирост: ${(report.Percent * 100).toFixed(2)}%\n`
     return txt
 }
 
@@ -58,12 +59,12 @@ async function GetFullPositionsReport() {
     let report = ""
     for (let item of data.Data) {
         report += `${item.name}: $${item.ticker}\n` +
-        `🟠 Количество: ${item.balance}\n` +
-        `🟡 Стоимость шт.: ${item.averagePositionPrice.value.toFixed(2)}\n` +
-        `🟢 Сумма: ${item.currentSum.toFixed(2)} ${item.averagePositionPrice.currency}\n` +
-        `🔵 Прирост: ${(item.profitPercent * 100).toFixed(2)}%\n` +
-        `🟣 Прибыль: ${item.expectedYield.value} ${item.averagePositionPrice.currency} ${item.expectedYield.value==0? "🟨" : item.expectedYield.value>0 ? "🟩" : "🟥"}\n` +
-        `\n`
+            `🟠 Количество: ${item.balance}\n` +
+            `🟡 Стоимость шт: ${item.averagePositionPrice.value.toFixed(2)} ${item.averagePositionPrice.currency}\n` +
+            `🟢 Сумма: ${item.currentSum.toFixed(2)} ${item.averagePositionPrice.currency}\n` +
+            `🔵 Прирост: ${(item.profitPercent * 100).toFixed(2)}%\n` +
+            `🟣 Прибыль: ${item.expectedYield.value} ${item.averagePositionPrice.currency} ${item.expectedYield.value == 0 ? "🟨" : item.expectedYield.value > 0 ? "🟩" : "🟥"}\n` +
+            `\n`
     }
     report += await GetPositionsReport(data.Report)
     return report
