@@ -1,11 +1,13 @@
-const Token = require('./settings.js').Token;
+const Token = require('./settings.js').TinkoffToken;
 const CurrencyHelper = require('./CurrencyHelper.js');
+const TelegramHelper = require('./TelegramHelper.js');
 const OpenAPI = require('@tinkoff/invest-openapi-js-sdk');
 const api = new OpenAPI({
     apiURL: 'https://api-invest.tinkoff.ru/openapi/',
     socketURL: 'wss://api-invest.tinkoff.ru/openapi/md/v1/md-openapi/ws',
     secretToken: Token
 });
+
 async function GetPositionsData() {
     var portfolio = (await api.portfolio()).positions
     for(let item of portfolio){
@@ -35,11 +37,19 @@ async function GetPositionsData() {
 }
 
 async function GetPositionsReport(){
-    return (await GetPositionsData()).Report
+    var report = (await GetPositionsData()).Report
+    var txt =   `Прибыль в RUB: ${report.commonRUB.toFixed(2)}\n`+
+                `Прибыль в USD: ${report.commonUSD.toFixed(2)}\n`+
+                `Прирост: ${(report.Percent*100).toFixed(2)}%\n`
+    return txt
 }
 
+async function Main(){
+    TelegramHelper.Start()
+    setInterval(async ()=>TelegramHelper.SendMessage(await GetPositionsReport()), 360000)
+}
 
-
+Main()
 // async function test(){
 //     var qqq = await GetPositionsReport()
 //     console.log(qqq)

@@ -18,6 +18,7 @@
   "homepage": "https://github.com/dend35/tinkoff_invest#readme",
   "dependencies": {
     "@tinkoff/invest-openapi-js-sdk": "^1.2.16",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "telegraf": "^3.38.0"
   }
 }
