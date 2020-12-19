@@ -1,5 +1,6 @@
 const Token = require('./settings.js').TinkoffToken;
 const CurrencyHelper = require('./CurrencyHelper.js');
+const Extensions = require('./Extensions.js');
 const OpenAPI = require('@tinkoff/invest-openapi-js-sdk');
 const api = new OpenAPI({
     apiURL: 'https://api-invest.tinkoff.ru/openapi/',
@@ -38,9 +39,39 @@ async function GetPositionsData() {
         currentSumUSD: 0,
         Percent: 0
     })
-
+    console.log(portfolio)
     return { Data: portfolio, Report: report }
 }
+
+async function GetOperations(figi) {
+    let from = new Date(2015, 1, 1)
+    let to = new Date()
+    try{
+        var operations = (await api.operations({from, to, figi})).operations
+        operations = Extensions.groupBy('operationType')(operations)
+        
+        var report = []
+        for(operation in operations){
+            report.push(operations[operation].reduce(function (sum, val){
+                sum.operation = val.operationType
+                sum.avgPrice = (sum.avgPrice + val.price)/2
+                sum.count+= val.quantityExecuted
+                return sum
+            }, {
+                operation: "",
+                avgPrice: 0,
+                count: 0
+            }))
+        }
+        console.log(report)
+    }catch(ex){
+        console.log(ex)
+    }
+    
+}
+
+//GetOperations("BBG000000001")
+
 
 async function GetPositionsReport(report) {
     if (!report)
